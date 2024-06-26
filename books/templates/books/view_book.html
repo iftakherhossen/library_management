@@ -1,0 +1,119 @@
+{% extends 'base.html' %} 
+{% load static %} 
+
+{% block page_title %} {{book.title}} - Details {% endblock %} 
+
+{% block content %}
+<div>
+    <div>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-y-5 lg:gap-x-5 p-5 text-white">
+            <figure>
+                {% if book.image %}
+                    <img src="{{book.image.url}}" alt="{{book.title}}" class="h-full w-full rounded-lg">
+                {% endif %}
+            </figure>
+            <div class="col-span-2 p-5 flex flex-col justify-between">
+                <div>
+                    <h1 class="text-3xl font-bold mb-2">{{book.title}}</h1>
+                    <h5 class="text-xl">By <b>{{book.author}}</b></h5>
+                    <p class="text-lg my-4"><span class="font-semibold">Category:</span> {{book.category}}</p>
+                    <p class="text-lg my-4"><span class="font-semibold">At a glance:</span> {{book.description}}</p>
+                    <p class="text-lg my-4"><span class="font-semibold">Borrowing Price:</span> <span class="text-red-500 font-bold">$ {{book.borrowing_price}}</span></p>
+                </div>
+                {% if request.user.account.balance < book.borrowing_price %}
+                    <div class="mt-5">  
+                        <div>
+                            <p class="text-red-500">N.B You didn't have enough money to Borrow this Book. Please deposit enough money first!</p>
+                        </div>
+                        <div class="mt-8">                   
+                            <a href="{% url 'deposit' %}" class="bg-gray-900 hover:bg-gray-800 px-10 py-3 rounded-lg uppercase tracking-wider font-semibold">Deposit Money</a>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="mt-5">
+                        <form method="post" action="{% url 'borrow' book.slug %}">
+                            {% csrf_token %}             
+                            <button class="bg-gray-900 hover:bg-gray-800 px-10 py-3 rounded-lg uppercase tracking-wider font-semibold" type="submit">Borrow</button>                    
+                        </form>
+                {% endif %}         
+            </div>
+        </div>
+    </div>
+    <div class="mt-10 text-white">
+        <div class="my-5">
+            {% if reviews %}
+                <div>
+                    <div class="mb-6 mx-3">
+                        <h3 class="text-2xl font-semibold">Reviews ( {{reviews|length}} )</h3>
+                    </div>
+                    <div>
+                        {% for review in reviews %}
+                        <div class="bg-gray-800 rounded-xl mb-4">
+                            <div class="py-3 px-5">
+                                <h5 class="text-lg font-semibold mb-0">{{review.name}}</h5>
+                                <p class="mb-0 text-sm text-gray-400 font-medium tracking-wide">{{review.created_on|timesince}} ago</p>
+                            </div>
+                            <div class="border-t border-gray-700 py-4 px-6">
+                                <p class="mb-0 tracking-wide font-medium text-lg whitespace-pre-wrap">{{review.comment|capfirst}}</p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% else %}
+                <div class="mb-8 mx-3">
+                    <h3 class="text-2xl font-semibold">No Reviews Yet!</h3>
+                </div>
+            {% endif %}
+        </div>
+        <div class="my-5">    
+            <div class="w-full bg-gray-800 rounded-xl p-10">
+                <div class="mb-6">
+                    <h4 class="text-2xl font-semibold uppercase tracking-wider">Leave a review</h4>
+                </div>
+                <div> {% comment %} value="{{request.user.first_name}} {{request.user.last_name}}" value="{{request.user.email}}" {% endcomment %}
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-6">             
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                                <div class="w-full mb-4">
+                                    <label class="text-base uppercase font-semibold tracking-wide px-1 mb-2" for="{{review_form.name.id_for_label}}">{{review_form.name.label}}</label>
+                                    <input class="shadow appearance-none border border-gray-500 rounded-lg w-full py-2 px-3 text-gray-800 leading-tight focus:outline-none focus:shadow-outline mt-2 font-bold bg-gray-300" name="{{review_form.name.html_name}}" id="{{review_form.id_for_label}}" type="{{review_form.name.widget.input_type}}" placeholder="Type your name" required="true" value="{{request.user.first_name}} {{request.user.last_name}}">
+                                    {% for error in review_form.name.errors %}
+                                        <p class="text-red-600 text-sm pb-2">{{ error }}</p>
+                                    {% endfor %}
+                                </div>
+                                <div class="w-full mb-4">
+                                    <label class="text-base uppercase font-semibold tracking-wide px-1 mb-2" for="{{review_form.email.id_for_label}}">{{review_form.email.label}}</label>
+                                    <input class="shadow appearance-none border border-gray-500 rounded-lg w-full py-2 px-3 text-gray-800 leading-tight focus:outline-none focus:shadow-outline mt-2 font-bold bg-gray-300" name="{{review_form.email.html_name}}" id="{{review_form.email.id_for_label}}" type="{{review_form.email.widget.input_type}}" placeholder="Type your email" required="true" value="{{request.user.email}}">
+                                    {% for error in review_form.email.errors %}
+                                        <p class="text-red-600 text-sm pb-2">{{ error }}</p>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="w-full mb-4">
+                                <label class="text-base uppercase font-semibold tracking-wide px-1 mb-2" for="{{review_form.email.id_for_label}}">{{review_form.comment.label}}</label>
+                                <textarea class="shadow appearance-none border border-gray-500 rounded-lg w-full py-2 px-3 text-gray-800 leading-tight focus:outline-none focus:shadow-outline mt-2 font-bold resize-none h-44 bg-gray-300" name="{{review_form.comment.html_name}}" id="{{review_form.comment.id_for_label}}" type="{{review_form.comment.widget.input_type}}" placeholder="Type your comment" required="true"></textarea>
+                                {% for error in review_form.comment.errors %}
+                                    <p class="text-red-600 text-sm pb-2">{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <button class="bg-gray-900 px-10 py-2 rounded-lg">Submit</button>
+                    </form>
+                </div>
+            </div>
+            <div>
+                {% if form.non_field_errors %}
+                    {% for error in from.non_field_errors %}
+                        <div class="bg-red-700 text-white px-5 py-3 rounded-xl font-semibold flex items-center flex-wrap gap-3 mb-3">
+                            <span class="text-lg py-1">&#9888;</span>
+                            <span>{{error}}</span>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>        
+    </div>
+</div>
+{% endblock %}

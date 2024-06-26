@@ -1,0 +1,18 @@
+<h3>Hello, {{user.first_name}} {{user.last_name}}</h3>
+
+<p>I hope this email finds you well.</p>
+
+{% if key == 'Borrow' %}
+    <p>We are writing to confirm that you have borrowed the book successfully. Your updated account balance is now ${{balance}}.</p>
+{% elif key == 'Return' %}
+    <p>We are writing to confirm that you have returned the book successfully. Your updated account balance is now ${{balance}}..</p>
+{% else %}
+    <p>We are writing to confirm that you have been successfully deposited {{amount}}. Your updated account balance is now ${{balance}}.</p>
+{% endif %}
+
+<p>For any query you can replay in to this email.</p>
+
+<p>Thank you for banking with us!</p>
+
+<p>Best Regards</p>
+<p>State Bank</p>

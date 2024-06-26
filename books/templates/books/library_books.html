@@ -1,0 +1,58 @@
+{% extends 'base.html' %} 
+{% load static %} 
+
+{% block page_title %} Library Management - Books {% endblock %} 
+
+{% block content %}
+<div>
+    <div class="text-white p-5">
+        <div>
+            <div class="mb-5">
+                <h3 class="text-2xl font-semibold">Filter by Category</h3>
+            </div>
+            <div class="flex gap-3 flex-wrap">
+                <a href="{% url 'books' %}" class="border rounded-lg px-5 py-1.5 font-semibold tracking-wider cursor-pointer hover:shadow-lg hover:bg-gray-900">All</a>
+                {% for category in categories %}
+                    <a href="{% url 'categorizedBooks' category.slug %}" class="border rounded-lg px-5 py-1.5 font-semibold tracking-wider cursor-pointer hover:shadow-lg hover:bg-gray-900">{{category.name}}</a>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="p-7 text-center">
+            {% if filtered %}
+                {% if book_count > 0 %}
+                    <h4 class="text-xl text-green-300">In <b>{{categorySlug|capfirst}}</b> Category We Found <b>{{book_count}}</b> Books.</h4>
+                {% else %}
+                    <h4 class="text-xl text-red-300">No Books Found in the <b>{{categorySlug|capfirst}} Category</b></h4>
+                {% endif %}
+            {% endif %}
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {% for book in books %}
+                <div class="flex flex-col sm:flex-row shadow hover:shadow-2xl cursor-pointer rounded-lg px-4 gap-x-5 border border-gray-700">
+                    <figure class="h-full w-full sm:w-2/5 py-4">
+                        {% if book.image %}
+                            <img src="{{book.image.url}}" alt="{{book.title}}" class="h-full w-full sm:rounded-lg">
+                        {% endif %}
+                    </figure>
+                    <div class="h-full w-full sm:w-3/5 flex flex-col justify-between px-2 pt-2 pb-7 sm:px-0 sm:py-8">
+                        <div>
+                            <h2 class="text-2xl font-semibold mb-1">{{book.title}}</h2>
+                            <h5 class="text-lg">By <b>{{book.author}}</b></h5>
+                            {% if book.description|length > 15 %}
+                                <p class="my-3 pr-3" style="font-size: 17.5px;">{{book.description|truncatewords:15}}</p>
+                            {% else %}
+                                <p class="my-3 pr-3" style="font-size: 17.5px;">{{book.description}}</p>
+                            {% endif %}
+                            <p class="mb-4" style="font-size: 17.5px;">Category: <b>{{book.category}}</b></p>
+                            <h6 class="text-lg text-red-400">Borrowing Price: <b>$ {{book.borrowing_price}}</b></h6>
+                        </div>
+                        <div class="mt-5 flex items-center gap-2">
+                            <a href="{% url 'view_book' book.slug %}" class="bg-gray-900 hover:bg-gray-800 px-7 py-2.5 rounded-lg uppercase tracking-wider font-semibold text-sm">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

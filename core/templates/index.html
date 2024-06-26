@@ -1,0 +1,31 @@
+{% extends 'base.html' %} 
+{% load static %} 
+
+{% block page_title %} Library Management - Home {% endblock %} 
+
+{% block content %}
+<div class="container mx-auto">
+    <div class="min-h-[750px] flex items-center my-10">
+        <div class="flex flex-col-reverse lg:flex-row items-center">
+            <div class="w-[100%] lg:w-[50%] lg:bg-gray-700 px-12 py-10 text-white flex flex-col shadow-lg rounded-xl">
+                <h6 class="font-bold text-2xl -mb-1">Welcome to</h6>
+                <h1 class="font-bold" style="font-size: 2.55rem;">Library Management.</h1>
+                <div class="mt-4 mb-10">
+                    <p class="text-[17px] leading-slug">Our Library Management System provides an intuitive platform for users to explore, borrow, and review books. Users can filter books by categories, view detailed descriptions, and see user reviews. Account creation, login, and logout features are available, along with the ability to deposit funds for book borrowing. The system tracks borrowing history and sends automated email notifications for successful transactions, ensuring users stay informed about their account activities. A seamless and efficient library experience for all.</p>
+                </div>
+                <div class="w-full flex justify-center lg:justify-end mt-auto gap-x-4">
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'profile' %}" class="bg-gray-900 text-white w-40 h-11 uppercase font-bold border-none tracking-wider flex justify-center items-center rounded-lg text-sm">Profile</a>
+                        <a href="{% url 'books' %}" class="bg-gray-900 text-white w-48 h-11 uppercase font-bold border-none tracking-wider flex justify-center items-center rounded-lg text-sm">Borrow a Book</a>
+                    {% else %}
+                        <a href="{% url 'register' %}" class="bg-gray-900 text-white w-40 h-11 uppercase font-bold border-none tracking-wider flex justify-center items-center rounded-lg text-sm">Register</a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="w-[100%] lg:w-[50%] p-8 mb-8 lg:mb-0">
+                <img src="{% static './images/library.png' %}" alt="Library" class="w-full">
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

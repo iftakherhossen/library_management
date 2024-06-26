@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block page_title %} Borrow Book - Libary Mangement {% endblock %}
+
+{% block content %}
+<div class="text-white">
+    <div class="container p-5">
+        <div class="mt-10 mb-8">
+            <h2 class="text-3xl font-bold">Borrow the Book <b>{{book.title}}</b></h2>
+        </div>
+        <div>
+            <form method="post">
+                {% csrf_token %}
+                <h5 class="text-lg my-4">Borrowing Price: {{book.borrowing_price}}</h5>
+                <div>
+                    {% if form.amount.errors %}
+                        {% for error in form.amount.errors %}
+                            <div class="bg-red-600 text-white px-5 py-3 rounded-xl font-semibold flex items-center flex-wrap gap-3 mt-5">
+                                <span class="text-lg">&#9888;</span>
+                                <span>{{error}}</span>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>                
+                <button type="submit" class="bg-gray-900 px-8 py-2.5 rounded-lg cursor-pointer appearance-none text-start focus:border-0 focus:outline-none">Submit</button>                    
+            </form>
+        </div>
+    </div>        
+</div>
+{% endblock %}
