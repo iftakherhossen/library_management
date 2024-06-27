@@ -11,9 +11,9 @@
                 <h3 class="text-2xl font-semibold">Filter by Category</h3>
             </div>
             <div class="flex gap-3 flex-wrap">
-                <a href="{% url 'books' %}" class="border rounded-lg px-5 py-1.5 font-semibold tracking-wider cursor-pointer hover:shadow-lg hover:bg-gray-900">All</a>
+                <a href="{% url 'books' %}" class="border rounded-lg px-5 py-1 font-semibold tracking-wider cursor-pointer hover:shadow-lg hover:bg-gray-900">All</a>
                 {% for category in categories %}
-                    <a href="{% url 'categorizedBooks' category.slug %}" class="border rounded-lg px-5 py-1.5 font-semibold tracking-wider cursor-pointer hover:shadow-lg hover:bg-gray-900">{{category.name}}</a>
+                    <a href="{% url 'categorizedBooks' category.slug %}" class="border rounded-lg px-5 py-1 font-semibold tracking-wider cursor-pointer hover:shadow-lg hover:bg-gray-900">{{category.name}}</a>
                 {% endfor %}
             </div>
         </div>
